@@ -115,6 +115,75 @@
   .nav-links a:hover::after{ width:100%; }
   .nav-cta{ display:flex; align-items:center; gap:22px; }
   .nav-cta .btn{ padding:10px 20px; font-size:11px; }
+
+  .cart-btn{
+    position:relative;
+    background:none; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    width:34px; height:34px; padding:0;
+  }
+  .cart-btn svg{ width:22px; height:22px; fill:var(--gold-1); }
+  .cart-count{
+    position:absolute; top:-6px; right:-8px;
+    background:var(--gold-2); color:#171310;
+    font-family:'Jost',sans-serif; font-size:10px; font-weight:700;
+    min-width:17px; height:17px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    padding:0 3px;
+  }
+  .cart-count.empty{ display:none; }
+
+  .cart-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.6);
+    z-index:90; opacity:0; pointer-events:none; transition:opacity .3s ease;
+  }
+  .cart-overlay.open{ opacity:1; pointer-events:auto; }
+
+  .cart-drawer{
+    position:fixed; top:0; right:0; bottom:0;
+    width:min(360px, 88vw);
+    background:var(--bg-soft);
+    border-left:1px solid var(--card-line);
+    z-index:95;
+    display:flex; flex-direction:column;
+    transform:translateX(100%);
+    transition:transform .35s ease;
+  }
+  .cart-drawer.open{ transform:translateX(0); }
+  .cart-drawer-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 22px; border-bottom:1px solid var(--card-line);
+    padding-top:calc(20px + env(safe-area-inset-top, 0px));
+  }
+  .cart-drawer-head h3{ font-style:italic; color:var(--gold-1); font-size:20px; }
+  .cart-close{ background:none; border:none; color:var(--cream-dim); font-size:16px; cursor:pointer; }
+  .cart-items{ flex:1; overflow-y:auto; padding:10px 22px; }
+  .cart-empty{ color:var(--bronze); font-size:13px; text-align:center; margin-top:30px; }
+  .cart-item{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    gap:10px; padding:14px 0; border-bottom:1px solid rgba(255,255,255,.05);
+  }
+  .cart-item-name{ font-size:14px; color:var(--cream); }
+  .cart-item-meta{ font-size:11px; color:var(--bronze); margin-top:3px; }
+  .cart-item-price{ font-size:13px; color:var(--gold-1); white-space:nowrap; }
+  .cart-item-remove{
+    background:none; border:none; color:var(--bronze); font-size:14px;
+    cursor:pointer; padding:0 0 0 8px;
+  }
+  .cart-drawer-foot{
+    padding:18px 22px; border-top:1px solid var(--card-line);
+    padding-bottom:calc(18px + env(safe-area-inset-bottom, 0px));
+  }
+  .cart-total-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'Cormorant Garamond',serif; font-size:20px; color:var(--cream);
+    margin-bottom:14px;
+  }
+  .cart-total-row span:last-child{ color:var(--gold-1); }
+  #cartCheckout{ width:100%; text-align:center; justify-content:center; }
+  #cartCheckout.disabled{ opacity:.4; pointer-events:none; }
+
+  .card-order.added{ background:linear-gradient(135deg, var(--gold-1), var(--gold-3)); }
   .nav-burger{ display:none; background:none; border:none; color:var(--gold-1); font-size:24px; cursor:pointer; }
 
   @media (max-width: 860px){
@@ -229,6 +298,7 @@
 
   /* ---------- COLLECTION ---------- */
   .collection{ background:var(--bg-soft); }
+  .bestsellers-showcase{ background:var(--bg); padding-top:80px; }
   .grid{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
@@ -236,6 +306,7 @@
     max-width:1200px; margin:0 auto;
   }
   .card{
+    position:relative;
     background:var(--card);
     border:1px solid var(--card-line);
     padding:0;
@@ -243,6 +314,25 @@
     transition:border-color .35s ease, transform .35s ease;
   }
   .card:hover{ border-color:var(--gold-3); transform:translateY(-4px); }
+
+  .card-bestseller{
+    position:relative;
+    border-color:var(--gold-2);
+    box-shadow:0 0 0 1px var(--gold-2), 0 18px 40px rgba(201,162,75,.18);
+  }
+  @media (min-width: 640px){
+    .card-bestseller .card-photo{ aspect-ratio:16/9; }
+  }
+  .badge-bestseller{
+    position:absolute; top:14px; left:14px; z-index:2;
+    background:linear-gradient(135deg, var(--gold-1), var(--gold-3));
+    color:#171310;
+    font-family:'Jost',sans-serif;
+    font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+    padding:7px 14px;
+    border-radius:2px;
+    box-shadow:0 4px 12px rgba(0,0,0,.35);
+  }
   .card-photo{
     width:100%; aspect-ratio:4/3; overflow:hidden;
     background:linear-gradient(160deg, #EFE6D6, #DFD3BC);
@@ -330,7 +420,28 @@
     display:flex; flex-direction:column; align-items:center; gap:12px;
   }
   footer .crest{ width:34px; height:34px; opacity:.85; }
-  footer p{ font-size:11px; letter-spacing:.1em; color:var(--bronze); }
+  footer p{ font-size:11px; letter-spacing:.1em; color:var(--bronze); }  .whats-float{
+    position:fixed;
+    right:20px;
+    bottom:calc(20px + env(safe-area-inset-bottom, 0px));
+    z-index:80;
+    width:58px; height:58px;
+    border-radius:50%;
+    background:#25D366;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.45), 0 0 0 rgba(37,211,102,.5);
+    animation: whatsPulse 2.6s ease-in-out infinite;
+    transition:transform .25s ease;
+  }
+  .whats-float:hover{ transform:scale(1.08); }
+  .whats-float svg{ width:30px; height:30px; fill:#fff; }
+  @keyframes whatsPulse{
+    0%,100%{ box-shadow:0 6px 18px rgba(0,0,0,.45), 0 0 0 0 rgba(37,211,102,.45); }
+    50%{ box-shadow:0 6px 18px rgba(0,0,0,.45), 0 0 0 10px rgba(37,211,102,0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .whats-float{ animation:none; }
+  }
 </style>
 <!-- Google Analytics (GA4) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QW761DXYN4"></script>
@@ -350,15 +461,36 @@
   </div>
   <ul class="nav-links" id="navLinks">
     <li><a href="#inicio">Inicio</a></li>
+    <li><a href="#mas-vendidos">Favoritos</a></li>
     <li><a href="#quiz">Descubre</a></li>
     <li><a href="#coleccion">Colección</a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ul>
   <div class="nav-cta">
+    <button type="button" class="cart-btn" id="cartBtn" aria-label="Ver carrito">
+      <svg viewBox="0 0 24 24"><path d="M7 4h-2l-1 2v1h2l3.6 7.59-1.35 2.44c-.14.24-.22.52-.22.82 0 .93.75 1.68 1.68 1.68h9.19c.61 0 1.11-.5 1.11-1.11 0-.61-.5-1.11-1.11-1.11h-8.9l1-1.82h6.85c.61 0 1.11-.5 1.11-1.11 0-.11-.02-.22-.05-.32L20.72 6.9c.05-.11.08-.24.08-.37 0-.5-.4-.9-.9-.9H6.21l-.66-1.63Z"/></svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
     <a class="btn btn-solid" id="navWhats" target="_blank" rel="noopener"><span class="label-full">Pedir por</span> WhatsApp</a>
     <button class="nav-burger" id="burgerBtn" aria-label="Abrir menú">☰</button>
   </div>
 </nav>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-head">
+    <h3>Tu selección</h3>
+    <button type="button" class="cart-close" id="cartClose" aria-label="Cerrar">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-drawer-foot">
+    <div class="cart-total-row">
+      <span>Total</span>
+      <span id="cartTotal">$0 MXN</span>
+    </div>
+    <a class="btn btn-solid" id="cartCheckout" target="_blank" rel="noopener">Enviar pedido por WhatsApp</a>
+  </div>
+</aside>
 
 <section class="hero" id="inicio">
   <div class="hero-glow"></div>
@@ -369,6 +501,15 @@
     <a class="btn btn-solid whats-link" target="_blank" rel="noopener">Pedir por WhatsApp</a>
   </div>
   <div class="hero-scroll"><span>Descubre</span><span class="line"></span></div>
+</section>
+
+<section class="bestsellers-showcase" id="mas-vendidos">
+  <div class="section-head reveal">
+    <p class="eyebrow">Los favoritos</p>
+    <h2>Lo más pedido</h2>
+    <p>Las 3 fragancias que la gente más repite.</p>
+  </div>
+  <div class="grid" id="bestsellersGrid"></div>
 </section>
 
 <section class="quiz" id="quiz">
@@ -469,7 +610,8 @@ const PRODUCTS = [
   {
     brand: "Lattafa", name: "Khamrah", family: "oriental", image: "khamrah.jpg",
     notes: { salida: "Canela, nuez moscada, bergamota", corazon: "Dátiles, praliné, tuberosa", fondo: "Vainilla, haba tonka, maderas suaves" },
-    sizes: [{ml:5, price:100}, {ml:10, price:180}]
+    sizes: [{ml:5, price:100}, {ml:10, price:180}],
+    bestseller: true
   },
   {
     brand: "Lattafa", name: "Yara", family: "floral", image: "yara.jpg",
@@ -494,12 +636,14 @@ const PRODUCTS = [
   {
     brand: "Rasasi", name: "Hawas Fire", family: "oriental", image: "hawasfire.jpg",
     notes: { salida: "Salvia esclarea", corazon: "Jazmín egipcio, notas marinas", fondo: "Ámbar, ámbar gris, notas minerales" },
-    sizes: [{ml:5, price:110}, {ml:10, price:200}]
+    sizes: [{ml:5, price:110}, {ml:10, price:200}],
+    bestseller: true
   },
   {
     brand: "Ariana Grande", name: "Cloud", family: "floral", image: "arianacloud.jpg",
     notes: { salida: "Lavanda, pera, bergamota", corazon: "Crema batida, praliné, coco, vainilla orquídea", fondo: "Almizcle, notas amaderadas" },
-    sizes: [{ml:5, price:120}, {ml:10, price:220}]
+    sizes: [{ml:5, price:120}, {ml:10, price:220}],
+    bestseller: true
   },
 ];
 // ======= FIN CONFIGURACIÓN =======
@@ -515,22 +659,94 @@ document.querySelectorAll('.whats-link').forEach(a=>{
 document.getElementById('fbLink').href = CONFIG.facebook;
 document.getElementById('ttLink').href = CONFIG.tiktok;
 
-const grid = document.getElementById('productGrid');
+// ---- Carrito ----
+let CART = [];
+try { CART = JSON.parse(localStorage.getItem('jd_cart') || '[]'); } catch(e){ CART = []; }
 
-PRODUCTS.forEach((p, i) => {
+function saveCart(){
+  try { localStorage.setItem('jd_cart', JSON.stringify(CART)); } catch(e){}
+}
+
+function addToCart(item){
+  const existing = CART.find(c => c.brand===item.brand && c.name===item.name && c.ml===item.ml);
+  if (existing) existing.qty += 1;
+  else CART.push({ ...item, qty:1 });
+  saveCart();
+  renderCart();
+  openCart();
+}
+
+function removeFromCart(idx){
+  CART.splice(idx,1);
+  saveCart();
+  renderCart();
+}
+
+function renderCart(){
+  const itemsEl = document.getElementById('cartItems');
+  const countEl = document.getElementById('cartCount');
+  const totalEl = document.getElementById('cartTotal');
+  const checkoutBtn = document.getElementById('cartCheckout');
+
+  const totalQty = CART.reduce((n,c)=>n+c.qty,0);
+  countEl.textContent = totalQty;
+  countEl.classList.toggle('empty', totalQty===0);
+
+  if (CART.length===0){
+    itemsEl.innerHTML = '<p class="cart-empty">Todavía no agregas ningún decant.</p>';
+  } else {
+    itemsEl.innerHTML = CART.map((c,idx)=>`
+      <div class="cart-item">
+        <div>
+          <div class="cart-item-name">${c.brand} ${c.name}</div>
+          <div class="cart-item-meta">${c.ml}ml × ${c.qty}</div>
+        </div>
+        <div style="display:flex; align-items:center;">
+          <span class="cart-item-price">${c.price!=null ? `$${c.price*c.qty} MXN` : 'Consultar'}</span>
+          <button type="button" class="cart-item-remove" data-idx="${idx}" aria-label="Quitar">✕</button>
+        </div>
+      </div>
+    `).join('');
+    itemsEl.querySelectorAll('.cart-item-remove').forEach(btn=>{
+      btn.addEventListener('click', ()=> removeFromCart(parseInt(btn.dataset.idx)));
+    });
+  }
+
+  const total = CART.reduce((sum,c)=> sum + (c.price!=null ? c.price*c.qty : 0), 0);
+  const hasUnpriced = CART.some(c=>c.price==null);
+  totalEl.textContent = hasUnpriced ? `$${total} MXN +` : `$${total} MXN`;
+
+  if (CART.length===0){
+    checkoutBtn.classList.add('disabled');
+  } else {
+    checkoutBtn.classList.remove('disabled');
+    const lines = CART.map(c => `• ${c.brand} ${c.name} — ${c.ml}ml x${c.qty}${c.price!=null ? ` ($${c.price*c.qty} MXN)` : ''}`).join('%0A');
+    const msg = `Hola, quiero pedir estos decants:%0A${lines}%0A%0ATotal aproximado: $${total} MXN`;
+    checkoutBtn.href = `https://wa.me/${CONFIG.whatsappNumber}?text=${msg}`;
+  }
+}
+
+function openCart(){
+  document.getElementById('cartDrawer').classList.add('open');
+  document.getElementById('cartOverlay').classList.add('open');
+}
+function closeCart(){
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.getElementById('cartOverlay').classList.remove('open');
+}
+document.getElementById('cartBtn').addEventListener('click', openCart);
+document.getElementById('cartClose').addEventListener('click', closeCart);
+document.getElementById('cartOverlay').addEventListener('click', closeCart);
+
+renderCart();
+
+function buildCard(p, i){
   const color = FAMILY_COLORS[p.family] || "#C9A24B";
   const card = document.createElement('div');
-  card.className = 'card';
-
-  const pyramidRow = (label, note, widthPct) => `
-    <div class="pyramid-row">
-      <span class="pyramid-label">${label}</span>
-      <div class="pyramid-bar"><span style="width:${widthPct}%; background:${color};"></span></div>
-    </div>
-    <div class="pyramid-note" style="grid-column:2;"></div>
-  `;
+  card.className = 'card' + (p.bestseller ? ' card-bestseller' : '');
 
   card.innerHTML = `
+    ${p.bestseller ? '<div class="badge-bestseller">Más vendido</div>' : ''}
     <div class="card-photo"><img src="${p.image}" alt="${p.brand} ${p.name}" loading="lazy"></div>
     <div class="card-tag" style="background:${color};"></div>
     <div class="card-body">
@@ -561,7 +777,7 @@ PRODUCTS.forEach((p, i) => {
           <small>Precio</small>
           <span class="price-val">$${p.sizes[0].price} MXN</span>
         </div>
-        <a class="btn btn-solid card-order" href="#">Pedir</a>
+        <button type="button" class="btn btn-solid card-order">Agregar</button>
       </div>
     </div>
   `;
@@ -569,13 +785,11 @@ PRODUCTS.forEach((p, i) => {
   const pills = card.querySelectorAll('.size-pill');
   const priceVal = card.querySelector('.price-val');
   const orderBtn = card.querySelector('.card-order');
+  let currentSize = p.sizes[0];
 
   function updateOrder(si){
-    const s = p.sizes[si];
-    priceVal.textContent = (s.price != null) ? `$${s.price} MXN` : "Precio por WhatsApp";
-    orderBtn.href = waLink(`Hola, quiero pedir un decant de ${p.brand} ${p.name} de ${s.ml}ml.`);
-    orderBtn.target = "_blank";
-    orderBtn.rel = "noopener";
+    currentSize = p.sizes[si];
+    priceVal.textContent = (currentSize.price != null) ? `$${currentSize.price} MXN` : "Precio por WhatsApp";
   }
   updateOrder(0);
 
@@ -587,8 +801,26 @@ PRODUCTS.forEach((p, i) => {
     });
   });
 
-  grid.appendChild(card);
-});
+  orderBtn.addEventListener('click', ()=>{
+    addToCart({ brand:p.brand, name:p.name, ml:currentSize.ml, price:currentSize.price });
+    const original = orderBtn.textContent;
+    orderBtn.textContent = 'Agregado ✓';
+    orderBtn.classList.add('added');
+    setTimeout(()=>{ orderBtn.textContent = original; orderBtn.classList.remove('added'); }, 1300);
+  });
+
+  return card;
+}
+
+const grid = document.getElementById('productGrid');
+PRODUCTS.forEach((p, i) => grid.appendChild(buildCard(p, i)));
+
+const bestGrid = document.getElementById('bestsellersGrid');
+if (bestGrid){
+  PRODUCTS.forEach((p, i) => {
+    if (p.bestseller) bestGrid.appendChild(buildCard(p, i));
+  });
+}
 
 // Quiz "¿Cuál es tu fragancia?"
 const quizOpts = document.querySelectorAll('.quiz-opt');
@@ -633,5 +865,8 @@ const io = new IntersectionObserver((entries)=>{
 }, { threshold: 0.15 });
 revealEls.forEach(el=> io.observe(el));
 </script>
+<a class="whats-float whats-link" target="_blank" rel="noopener" aria-label="Pedir por WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.06-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2Zm0 18a7.9 7.9 0 0 1-4.06-1.11l-.29-.17-3.01.79.8-2.93-.19-.3A7.93 7.93 0 1 1 12 20Zm4.36-5.86c-.24-.12-1.43-.7-1.65-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.19-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.43-.58 1.63-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28Z"/></svg>
+</a>
 </body>
 </html>
