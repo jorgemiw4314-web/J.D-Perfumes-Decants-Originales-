@@ -301,12 +301,35 @@
 
   /* ---------- COLLECTION ---------- */
   .collection{ background:var(--bg-soft); }
+
+  .filter-pills{
+    display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+    max-width:1200px; margin:0 auto 40px;
+  }
+  .filter-pill{
+    border:1px solid var(--card-line); background:transparent; color:var(--cream-dim);
+    padding:9px 20px; font-family:'Jost',sans-serif; font-size:12px; letter-spacing:.08em;
+    text-transform:uppercase; cursor:pointer; transition:all .25s ease;
+  }
+  .filter-pill:hover{ border-color:var(--gold-2); color:var(--gold-1); }
+  .filter-pill.active{ background:var(--gold-2); border-color:var(--gold-2); color:#171310; }
+
+  .card.filtered-out{ display:none; }
+
+  .coming-head{
+    text-align:center; max-width:600px; margin:70px auto 36px;
+    padding-top:44px; border-top:1px solid var(--card-line);
+  }
+  .coming-head h3{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:28px; color:var(--cream-dim); margin-top:8px; }
   .bestsellers-showcase{ background:var(--bg); padding-top:80px; }
   .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
-    gap:28px;
+    grid-template-columns:repeat(2, 1fr);
+    gap:14px;
     max-width:1200px; margin:0 auto;
+  }
+  @media (min-width: 700px){
+    .grid{ gap:28px; }
   }
   .card{
     position:relative;
@@ -358,29 +381,45 @@
   }
   .card-photo img{ width:100%; height:100%; object-fit:contain; mix-blend-mode:multiply; }
   .card-tag{ height:5px; width:100%; }
-  .card-body{ padding:28px 26px 26px; display:flex; flex-direction:column; flex:1; }
-  .card-brand{ font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--bronze); }
-  .card-name{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:27px; color:var(--cream); margin-top:6px; }
+  .card-body{ padding:14px 12px 14px; display:flex; flex-direction:column; flex:1; }
+  .card-brand{ font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--bronze); }
+  .card-name{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; line-height:1.15; color:var(--cream); margin-top:4px; }
+
+  .pyramid-row{ display:grid; grid-template-columns:44px 1fr; align-items:center; gap:6px; }
+  .pyramid-label{ font-size:7px; letter-spacing:.08em; text-transform:uppercase; color:var(--bronze); text-align:right; }
+  .pyramid-note{ font-size:10px; color:var(--cream-dim); margin-top:1px; line-height:1.25; }
+
+  .sizes{ display:flex; gap:6px; margin-top:14px; flex-wrap:wrap; }
+  .size-pill{ padding:6px 10px; font-size:11px; }
+  .card-footer{ margin-top:12px; display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+  .card-price{ font-family:'Cormorant Garamond',serif; font-size:17px; color:var(--gold-1); }
+  .card-order{ font-size:10px; letter-spacing:.08em; padding:8px 12px; }
+
+  @media (min-width: 700px){
+    .card-body{ padding:28px 26px 26px; }
+    .card-brand{ font-size:11px; letter-spacing:.2em; }
+    .card-name{ font-size:27px; margin-top:6px; }
+    .pyramid-row{ grid-template-columns:64px 1fr; gap:10px; }
+    .pyramid-label{ font-size:9px; letter-spacing:.16em; }
+    .pyramid-note{ font-size:12px; margin-top:2px; }
+    .sizes{ gap:8px; margin-top:24px; }
+    .card-footer{ margin-top:22px; gap:12px; }
+    .card-price{ font-size:22px; }
+    .card-order{ font-size:11px; letter-spacing:.12em; padding:10px 16px; }
+  }
 
   .pyramid{ margin-top:20px; display:flex; flex-direction:column; gap:6px; }
-  .pyramid-row{ display:grid; grid-template-columns:64px 1fr; align-items:center; gap:10px; }
-  .pyramid-label{ font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--bronze); text-align:right; }
   .pyramid-bar{ height:3px; background:rgba(255,255,255,.06); position:relative; overflow:hidden; }
   .pyramid-bar span{ position:absolute; left:0; top:0; bottom:0; }
-  .pyramid-note{ font-size:12px; color:var(--cream-dim); margin-top:2px; }
 
-  .sizes{ display:flex; gap:8px; margin-top:24px; flex-wrap:wrap; }
   .size-pill{
     border:1px solid var(--card-line); background:transparent; color:var(--cream-dim);
-    padding:8px 14px; font-family:'Jost',sans-serif; font-size:12px; letter-spacing:.05em;
+    font-family:'Jost',sans-serif; letter-spacing:.05em;
     cursor:pointer; transition:all .25s ease;
   }
   .size-pill.active, .size-pill:hover{ border-color:var(--gold-2); color:var(--gold-1); }
 
-  .card-footer{ margin-top:22px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
-  .card-price{ font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--gold-1); }
   .card-price small{ font-family:'Jost',sans-serif; font-size:11px; color:var(--bronze); display:block; letter-spacing:.1em; }
-  .card-order{ font-size:11px; letter-spacing:.12em; padding:10px 16px; }
 
   /* ---------- HOW IT WORKS ---------- */
   .how{ }
@@ -522,7 +561,7 @@
   <div class="section-head reveal">
     <p class="eyebrow">Los favoritos</p>
     <h2>Lo más pedido</h2>
-    <p>Las 3 fragancias que la gente más repite.</p>
+    <p>Las 4 fragancias que la gente más repite.</p>
   </div>
   <div class="grid" id="bestsellersGrid"></div>
 </section>
@@ -533,7 +572,20 @@
     <h2>Perfumes originales, en el tamaño justo</h2>
     <p>Fraccionado a mano desde el frasco 100% original y sellado de fábrica. Nada de esencias genéricas ni imitaciones.</p>
   </div>
+  <div class="filter-pills" id="filterPills">
+    <button type="button" class="filter-pill active" data-filter="all">Todos</button>
+    <button type="button" class="filter-pill" data-filter="fresco">Fresco</button>
+    <button type="button" class="filter-pill" data-filter="floral">Floral</button>
+    <button type="button" class="filter-pill" data-filter="amaderado">Amaderado</button>
+    <button type="button" class="filter-pill" data-filter="oriental">Oriental</button>
+  </div>
   <div class="grid" id="productGrid"></div>
+
+  <div class="coming-head reveal">
+    <p class="eyebrow">Muy pronto</p>
+    <h3>Próximas fragancias</h3>
+  </div>
+  <div class="grid grid-coming" id="comingGrid"></div>
 </section>
 
 <section class="trust">
@@ -620,7 +672,8 @@ const PRODUCTS = [
   {
     brand: "Afnan", name: "9 PM", family: "oriental", image: "afnan.jpg",
     notes: { salida: "Manzana, canela, lavanda", corazon: "Azahar, muguet", fondo: "Vainilla, haba tonka, ámbar" },
-    sizes: [{ml:5, price:90}, {ml:10, price:160}]
+    sizes: [{ml:5, price:90}, {ml:10, price:160}],
+    bestseller: true
   },
   {
     brand: "Armaf", name: "Odyssey Aqua", family: "fresco", image: "aquaman.jpg",
@@ -844,7 +897,17 @@ function buildCard(p, i){
 }
 
 const grid = document.getElementById('productGrid');
-PRODUCTS.forEach((p, i) => grid.appendChild(buildCard(p, i)));
+const comingGrid = document.getElementById('comingGrid');
+const SORTED_PRODUCTS = PRODUCTS
+  .map((p, i) => ({ p, i }))
+  .sort((a, b) => a.p.brand.localeCompare(b.p.brand) || a.p.name.localeCompare(b.p.name));
+SORTED_PRODUCTS.forEach(({p, i}) => {
+  if (p.bestseller) return; // los más vendidos solo van en la sección de arriba
+  const card = buildCard(p, i);
+  card.dataset.family = p.family;
+  if (p.comingSoon) comingGrid.appendChild(card);
+  else grid.appendChild(card);
+});
 
 const bestGrid = document.getElementById('bestsellersGrid');
 if (bestGrid){
@@ -852,6 +915,19 @@ if (bestGrid){
     if (p.bestseller) bestGrid.appendChild(buildCard(p, i));
   });
 }
+
+// Filtro por familia olfativa (solo aplica a los disponibles)
+const filterPills = document.querySelectorAll('.filter-pill');
+filterPills.forEach(pill=>{
+  pill.addEventListener('click', ()=>{
+    filterPills.forEach(p=>p.classList.remove('active'));
+    pill.classList.add('active');
+    const f = pill.dataset.filter;
+    grid.querySelectorAll('.card').forEach(card=>{
+      card.classList.toggle('filtered-out', f !== 'all' && card.dataset.family !== f);
+    });
+  });
+});
 
 // Menú móvil
 const burger = document.getElementById('burgerBtn');
