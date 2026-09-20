@@ -824,7 +824,6 @@ function buildCard(p, i){
 
   card.innerHTML = `
     ${p.bestseller ? '<div class="badge-bestseller">Más vendido</div>' : ''}
-    ${p.comingSoon ? '<div class="badge-coming">Próximamente</div>' : ''}
     <div class="card-photo"><img src="${p.image}" alt="${p.brand} ${p.name}" loading="lazy"></div>
     <div class="card-tag" style="background:${color};"></div>
     <div class="card-body">
