@@ -336,6 +336,19 @@
     border-radius:2px;
     box-shadow:0 4px 12px rgba(0,0,0,.35);
   }
+  .badge-coming{
+    position:absolute; top:14px; left:14px; z-index:2;
+    background:rgba(10,9,8,.85);
+    border:1px solid var(--gold-2);
+    color:var(--gold-1);
+    font-family:'Jost',sans-serif;
+    font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+    padding:7px 14px;
+    border-radius:2px;
+  }
+  .card-coming .card-photo img{ filter:grayscale(.55); opacity:.75; }
+  .card-coming .card-name{ color:var(--cream-dim); }
+  .card-coming .card-price small{ color:var(--gold-2); letter-spacing:.08em; text-transform:uppercase; font-size:11px; }
   .card-photo{
     width:100%; aspect-ratio:4/3; overflow:hidden;
     background:linear-gradient(160deg, #EFE6D6, #DFD3BC);
@@ -465,7 +478,6 @@
   <ul class="nav-links" id="navLinks">
     <li><a href="#inicio">Inicio</a></li>
     <li><a href="#mas-vendidos">Favoritos</a></li>
-    <li><a href="#quiz">Descubre</a></li>
     <li><a href="#coleccion">Colección</a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ul>
@@ -513,27 +525,6 @@
     <p>Las 3 fragancias que la gente más repite.</p>
   </div>
   <div class="grid" id="bestsellersGrid"></div>
-</section>
-
-<section class="quiz" id="quiz">
-  <div class="quiz-card reveal">
-    <p class="eyebrow">Descúbrelo</p>
-    <h2>¿Cuál es tu fragancia?</h2>
-    <p style="color:var(--cream-dim); font-size:14px; margin-top:14px;">Dinos qué te atrae y te decimos cuál decant probar primero.</p>
-    <div class="quiz-options" id="quizOptions">
-      <button class="quiz-opt" data-family="fresco">Fresco y cítrico</button>
-      <button class="quiz-opt" data-family="floral">Floral y dulce</button>
-      <button class="quiz-opt" data-family="amaderado">Amaderado y cálido</button>
-      <button class="quiz-opt" data-family="oriental">Intenso y misterioso</button>
-    </div>
-    <div class="quiz-result" id="quizResult">
-      <p class="eyebrow" id="qrEyebrow">Tu fragancia es</p>
-      <p class="qr-brand" id="qrBrand"></p>
-      <h3 id="qrName"></h3>
-      <p class="qr-copy" id="qrCopy"></p>
-      <a class="btn btn-solid" id="qrOrder" target="_blank" rel="noopener">Pedir este decant</a>
-    </div>
-  </div>
 </section>
 
 <section class="collection" id="coleccion">
@@ -648,6 +639,36 @@ const PRODUCTS = [
     sizes: [{ml:5, price:120}, {ml:10, price:220}],
     bestseller: true
   },
+  {
+    brand: "Rasasi", name: "Hawas Verde", family: "fresco", image: "hawasverde.jpg",
+    notes: { salida: "Lima, manzana verde, romero", corazon: "Cítricos mediterráneos, notas herbales", fondo: "Pachulí, ámbar, almizcle" },
+    sizes: [{ml:5, price:null}, {ml:10, price:null}],
+    comingSoon: true
+  },
+  {
+    brand: "Rasasi", name: "Hawas Kobra", family: "fresco", image: "hawaskobra.jpg",
+    notes: { salida: "Jengibre, bergamota, mandarina", corazon: "Té verde, neroli, canela", fondo: "Almizcle, ámbar gris, maderas" },
+    sizes: [{ml:5, price:null}, {ml:10, price:null}],
+    comingSoon: true
+  },
+  {
+    brand: "Lattafa", name: "Haya", family: "floral", image: "lattafahaya.jpg",
+    notes: { salida: "Naranja sanguina, fresa, mandarina, rosa", corazon: "Gardenia, jazmín, orquídea de vainilla", fondo: "Sándalo, ámbar, castaña" },
+    sizes: [{ml:5, price:null}, {ml:10, price:null}],
+    comingSoon: true
+  },
+  {
+    brand: "Mast Perfume", name: "Rome Melancholia Pour Homme", family: "amaderado", image: "romehomme.jpg",
+    notes: { salida: "Lavanda, ajenjo, cardamomo, nuez moscada, bergamota", corazon: "Piña, manzanilla, violeta", fondo: "Ciprés, cedro, coco, vainilla, ámbar gris" },
+    sizes: [{ml:5, price:null}, {ml:10, price:null}],
+    comingSoon: true
+  },
+  {
+    brand: "Mast Perfume", name: "Rome Melancholia Pour Femme", family: "floral", image: "romefemme.jpg",
+    notes: { salida: "Ciruela", corazon: "Osmanto, cuero", fondo: "Vainilla" },
+    sizes: [{ml:5, price:null}, {ml:10, price:null}],
+    comingSoon: true
+  },
 ];
 // ======= FIN CONFIGURACIÓN =======
 
@@ -746,10 +767,11 @@ renderCart();
 function buildCard(p, i){
   const color = FAMILY_COLORS[p.family] || "#C9A24B";
   const card = document.createElement('div');
-  card.className = 'card' + (p.bestseller ? ' card-bestseller' : '');
+  card.className = 'card' + (p.bestseller ? ' card-bestseller' : '') + (p.comingSoon ? ' card-coming' : '');
 
   card.innerHTML = `
     ${p.bestseller ? '<div class="badge-bestseller">Más vendido</div>' : ''}
+    ${p.comingSoon ? '<div class="badge-coming">Próximamente</div>' : ''}
     <div class="card-photo"><img src="${p.image}" alt="${p.brand} ${p.name}" loading="lazy"></div>
     <div class="card-tag" style="background:${color};"></div>
     <div class="card-body">
@@ -772,6 +794,10 @@ function buildCard(p, i){
         </div>
         <div class="pyramid-note">${p.notes.fondo}</div>
       </div>
+      ${p.comingSoon ? `
+      <div class="card-footer">
+        <div class="card-price"><small>Disponible pronto</small></div>
+      </div>` : `
       <div class="sizes" data-idx="${i}">
         ${p.sizes.map((s,si)=>`<button class="size-pill${si===0?' active':''}" data-si="${si}">${s.ml}ml</button>`).join('')}
       </div>
@@ -781,9 +807,11 @@ function buildCard(p, i){
           <span class="price-val">$${p.sizes[0].price} MXN</span>
         </div>
         <button type="button" class="btn btn-solid card-order">Agregar</button>
-      </div>
+      </div>`}
     </div>
   `;
+
+  if (p.comingSoon) return card;
 
   const pills = card.querySelectorAll('.size-pill');
   const priceVal = card.querySelector('.price-val');
@@ -824,36 +852,6 @@ if (bestGrid){
     if (p.bestseller) bestGrid.appendChild(buildCard(p, i));
   });
 }
-
-// Quiz "¿Cuál es tu fragancia?"
-const quizOpts = document.querySelectorAll('.quiz-opt');
-const quizResult = document.getElementById('quizResult');
-const qrBrand = document.getElementById('qrBrand');
-const qrName = document.getElementById('qrName');
-const qrCopy = document.getElementById('qrCopy');
-const qrOrder = document.getElementById('qrOrder');
-
-quizOpts.forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    quizOpts.forEach(b=>b.classList.remove('chosen'));
-    btn.classList.add('chosen');
-
-    const family = btn.dataset.family;
-    const match = PRODUCTS.find(p => p.family === family) || PRODUCTS[0];
-    const size = match.sizes[0];
-
-    qrBrand.textContent = match.brand;
-    qrName.textContent = match.name;
-    qrCopy.textContent = QUIZ_COPY[family] || "";
-    qrOrder.href = waLink(`Hola, hice el quiz de fragancias y me recomendó ${match.brand} ${match.name}. Quiero pedir un decant de ${size.ml}ml.`);
-
-    quizResult.classList.remove('revealed');
-    // pequeño retraso para que el desenfoque se sienta como una revelación, no un salto instantáneo
-    requestAnimationFrame(()=> requestAnimationFrame(()=> quizResult.classList.add('revealed')));
-
-    quizResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  });
-});
 
 // Menú móvil
 const burger = document.getElementById('burgerBtn');
