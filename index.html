@@ -29,6 +29,7 @@
 
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
+  body.no-scroll{ overflow:hidden; height:100%; }
   body{
     margin:0;
     background:var(--bg);
@@ -219,7 +220,7 @@
     color:var(--cream); font-size:14px; cursor:pointer;
   }
   .product-modal-photo{
-    width:100%; aspect-ratio:1/1;
+    width:100%; aspect-ratio:16/10; max-height:38vh;
     background:linear-gradient(160deg, #EFE6D6, #DFD3BC);
     display:flex; align-items:center; justify-content:center;
     overflow:hidden;
@@ -866,10 +867,12 @@ function renderCart(){
 function openCart(){
   document.getElementById('cartDrawer').classList.add('open');
   document.getElementById('cartOverlay').classList.add('open');
+  document.body.classList.add('no-scroll');
 }
 function closeCart(){
   document.getElementById('cartDrawer').classList.remove('open');
   document.getElementById('cartOverlay').classList.remove('open');
+  document.body.classList.remove('no-scroll');
 }
 document.getElementById('cartBtn').addEventListener('click', openCart);
 document.getElementById('cartClose').addEventListener('click', closeCart);
@@ -884,6 +887,7 @@ const productOverlay = document.getElementById('productOverlay');
 function closeProductModal(){
   productModal.classList.remove('open');
   productOverlay.classList.remove('open');
+  document.body.classList.remove('no-scroll');
 }
 document.getElementById('productModalClose').addEventListener('click', closeProductModal);
 productOverlay.addEventListener('click', closeProductModal);
@@ -949,6 +953,7 @@ function openProductModal(p, color){
 
   productModal.classList.add('open');
   productOverlay.classList.add('open');
+  document.body.classList.add('no-scroll');
 }
 
 function buildCard(p, i){
