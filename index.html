@@ -184,6 +184,54 @@
   #cartCheckout.disabled{ opacity:.4; pointer-events:none; }
 
   .card-order.added{ background:linear-gradient(135deg, var(--gold-1), var(--gold-3)); }
+
+  .card-photo{ cursor:zoom-in; }
+
+  .product-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.75);
+    z-index:120; opacity:0; pointer-events:none; transition:opacity .3s ease;
+  }
+  .product-overlay.open{ opacity:1; pointer-events:auto; }
+
+  .product-modal{
+    position:fixed; top:50%; left:50%;
+    width:min(480px, 92vw);
+    max-height:88vh;
+    overflow-y:auto;
+    background:var(--card);
+    border:1px solid var(--gold-2);
+    z-index:125;
+    transform:translate(-50%,-50%) scale(.85);
+    opacity:0;
+    pointer-events:none;
+    transition:transform .3s cubic-bezier(.2,.9,.3,1.2), opacity .25s ease;
+    box-shadow:0 30px 80px rgba(0,0,0,.6);
+  }
+  .product-modal.open{
+    transform:translate(-50%,-50%) scale(1);
+    opacity:1;
+    pointer-events:auto;
+  }
+  .product-modal-close{
+    position:absolute; top:12px; right:12px; z-index:2;
+    width:34px; height:34px; border-radius:50%;
+    background:rgba(10,9,8,.7); border:1px solid var(--card-line);
+    color:var(--cream); font-size:14px; cursor:pointer;
+  }
+  .product-modal-photo{
+    width:100%; aspect-ratio:1/1;
+    background:linear-gradient(160deg, #EFE6D6, #DFD3BC);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .product-modal-photo img{ width:100%; height:100%; object-fit:contain; mix-blend-mode:multiply; }
+  .product-modal-body{ padding:26px 26px 30px; }
+  #pmOrderArea{ margin-top:22px; }
+  #pmOrderArea .sizes{ margin-top:0; }
+  #pmOrderArea .card-footer{ margin-top:20px; }
+  @media (prefers-reduced-motion: reduce){
+    .product-modal{ transition:opacity .2s ease; }
+  }
   .nav-burger{ display:none; background:none; border:none; color:var(--gold-1); font-size:24px; cursor:pointer; }
 
   @media (max-width: 860px){
@@ -530,6 +578,18 @@
   </div>
 </nav>
 
+<div class="product-overlay" id="productOverlay"></div>
+<div class="product-modal" id="productModal">
+  <button type="button" class="product-modal-close" id="productModalClose" aria-label="Cerrar">✕</button>
+  <div class="product-modal-photo" id="pmPhoto"></div>
+  <div class="product-modal-body">
+    <span class="card-brand" id="pmBrand"></span>
+    <h3 class="card-name" id="pmName" style="font-size:30px;"></h3>
+    <div class="pyramid" id="pmPyramid" style="margin-top:22px;"></div>
+    <div id="pmOrderArea"></div>
+  </div>
+</div>
+
 <div class="cart-overlay" id="cartOverlay"></div>
 <aside class="cart-drawer" id="cartDrawer">
   <div class="cart-drawer-head">
@@ -817,6 +877,80 @@ document.getElementById('cartOverlay').addEventListener('click', closeCart);
 
 renderCart();
 
+// ---- Modal de producto (zoom) ----
+const productModal = document.getElementById('productModal');
+const productOverlay = document.getElementById('productOverlay');
+
+function closeProductModal(){
+  productModal.classList.remove('open');
+  productOverlay.classList.remove('open');
+}
+document.getElementById('productModalClose').addEventListener('click', closeProductModal);
+productOverlay.addEventListener('click', closeProductModal);
+
+function openProductModal(p, color){
+  document.getElementById('pmPhoto').innerHTML = `<img src="${p.image}" alt="${p.brand} ${p.name}">`;
+  document.getElementById('pmBrand').textContent = p.brand;
+  document.getElementById('pmName').textContent = p.name;
+  document.getElementById('pmPyramid').innerHTML = `
+    <div class="pyramid-row">
+      <span class="pyramid-label">Salida</span>
+      <div class="pyramid-bar"><span style="width:90%; background:${color};"></span></div>
+    </div>
+    <div class="pyramid-note">${p.notes.salida}</div>
+    <div class="pyramid-row">
+      <span class="pyramid-label">Corazón</span>
+      <div class="pyramid-bar"><span style="width:65%; background:${color};"></span></div>
+    </div>
+    <div class="pyramid-note">${p.notes.corazon}</div>
+    <div class="pyramid-row">
+      <span class="pyramid-label">Fondo</span>
+      <div class="pyramid-bar"><span style="width:40%; background:${color};"></span></div>
+    </div>
+    <div class="pyramid-note">${p.notes.fondo}</div>
+  `;
+
+  const orderArea = document.getElementById('pmOrderArea');
+  if (p.comingSoon){
+    orderArea.innerHTML = `<div class="card-footer"><div class="card-price"><small>Disponible pronto</small></div></div>`;
+  } else {
+    orderArea.innerHTML = `
+      <div class="sizes" id="pmSizes">
+        ${p.sizes.map((s,si)=>`<button class="size-pill${si===0?' active':''}" data-si="${si}">${s.ml}ml</button>`).join('')}
+      </div>
+      <div class="card-footer">
+        <div class="card-price">
+          <small>Precio</small>
+          <span class="price-val" id="pmPrice">${p.sizes[0].price != null ? `$${p.sizes[0].price} MXN` : 'Precio por WhatsApp'}</span>
+        </div>
+        <button type="button" class="btn btn-solid card-order" id="pmAddBtn">Agregar</button>
+      </div>
+    `;
+    let currentSize = p.sizes[0];
+    const pmPills = orderArea.querySelectorAll('.size-pill');
+    const pmPrice = document.getElementById('pmPrice');
+    const pmAddBtn = document.getElementById('pmAddBtn');
+    pmPills.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        pmPills.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSize = p.sizes[parseInt(btn.dataset.si)];
+        pmPrice.textContent = currentSize.price != null ? `$${currentSize.price} MXN` : 'Precio por WhatsApp';
+      });
+    });
+    pmAddBtn.addEventListener('click', ()=>{
+      addToCart({ brand:p.brand, name:p.name, ml:currentSize.ml, price:currentSize.price });
+      const original = pmAddBtn.textContent;
+      pmAddBtn.textContent = 'Agregado ✓';
+      pmAddBtn.classList.add('added');
+      setTimeout(()=>{ pmAddBtn.textContent = original; pmAddBtn.classList.remove('added'); }, 1300);
+    });
+  }
+
+  productModal.classList.add('open');
+  productOverlay.classList.add('open');
+}
+
 function buildCard(p, i){
   const color = FAMILY_COLORS[p.family] || "#C9A24B";
   const card = document.createElement('div');
@@ -862,6 +996,8 @@ function buildCard(p, i){
       </div>`}
     </div>
   `;
+
+  card.querySelector('.card-photo').addEventListener('click', ()=> openProductModal(p, color));
 
   if (p.comingSoon) return card;
 
