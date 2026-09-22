@@ -470,6 +470,24 @@
 
   .card-price small{ font-family:'Jost',sans-serif; font-size:11px; color:var(--bronze); display:block; letter-spacing:.1em; }
 
+  .full-bottle{
+    margin-top:14px; padding-top:14px;
+    border-top:1px dashed var(--card-line);
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px;
+    font-size:11px; color:var(--cream-dim);
+  }
+  .full-bottle strong{ color:var(--gold-1); font-weight:500; }
+  .full-bottle a{
+    font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--gold-2); border-bottom:1px solid var(--gold-3);
+    white-space:nowrap;
+  }
+  .full-bottle a:hover{ color:var(--gold-1); }
+  @media (min-width: 700px){
+    .full-bottle{ font-size:13px; margin-top:18px; padding-top:16px; }
+    .full-bottle a{ font-size:11px; }
+  }
+
   /* ---------- HOW IT WORKS ---------- */
   .how{ }
   .steps{
@@ -716,46 +734,54 @@ const PRODUCTS = [
   {
     brand: "Armaf", name: "Odyssey Mandarin Sky", family: "fresco", image: "mandarin.jpg",
     notes: { salida: "Salvia, mandarina, naranja", corazon: "Caramelo, haba tonka", fondo: "Vetiver, cedro, ambroxan" },
-    sizes: [{ml:5, price:100}, {ml:10, price:180}]
+    sizes: [{ml:5, price:100}, {ml:10, price:180}],
+    fullBottle: { price:900 }
   },
   {
     brand: "Lattafa", name: "Khamrah", family: "oriental", image: "khamrah.jpg",
     notes: { salida: "Canela, nuez moscada, bergamota", corazon: "Dátiles, praliné, tuberosa", fondo: "Vainilla, haba tonka, maderas suaves" },
     sizes: [{ml:5, price:100}, {ml:10, price:180}],
-    bestseller: true
+    bestseller: true,
+    fullBottle: { price:750 }
   },
   {
     brand: "Lattafa", name: "Yara", family: "floral", image: "yara.jpg",
     notes: { salida: "Orquídea, heliotropo, naranja tangerina", corazon: "Acorde gourmand, frutas tropicales", fondo: "Vainilla, almizcle, sándalo" },
-    sizes: [{ml:5, price:90}, {ml:10, price:160}]
+    sizes: [{ml:5, price:90}, {ml:10, price:160}],
+    fullBottle: { price:690 }
   },
   {
     brand: "Armaf", name: "Odyssey Mega", family: "amaderado", image: "mega.jpg",
     notes: { salida: "Jengibre, bergamota, menta", corazon: "Piña, salvia, geranio", fondo: "Almizcle, cedro, vetiver" },
-    sizes: [{ml:5, price:100}, {ml:10, price:180}]
+    sizes: [{ml:5, price:100}, {ml:10, price:180}],
+    fullBottle: { price:900 }
   },
   {
     brand: "Afnan", name: "9 PM", family: "oriental", image: "afnan.jpg",
     notes: { salida: "Manzana, canela, lavanda", corazon: "Azahar, muguet", fondo: "Vainilla, haba tonka, ámbar" },
     sizes: [{ml:5, price:90}, {ml:10, price:160}],
-    bestseller: true
+    bestseller: true,
+    fullBottle: { price:800 }
   },
   {
     brand: "Armaf", name: "Odyssey Aqua", family: "fresco", image: "aquaman.jpg",
     notes: { salida: "Notas marinas, menta", corazon: "Geranio", fondo: "Almizcle, maderas" },
-    sizes: [{ml:5, price:100}, {ml:10, price:180}]
+    sizes: [{ml:5, price:100}, {ml:10, price:180}],
+    fullBottle: { price:900 }
   },
   {
     brand: "Rasasi", name: "Hawas Fire", family: "oriental", image: "hawasfire.jpg",
     notes: { salida: "Salvia esclarea", corazon: "Jazmín egipcio, notas marinas", fondo: "Ámbar, ámbar gris, notas minerales" },
     sizes: [{ml:5, price:110}, {ml:10, price:200}],
-    bestseller: true
+    bestseller: true,
+    fullBottle: { price:1000 }
   },
   {
     brand: "Ariana Grande", name: "Cloud", family: "floral", image: "arianacloud.jpg",
     notes: { salida: "Lavanda, pera, bergamota", corazon: "Crema batida, praliné, coco, vainilla orquídea", fondo: "Almizcle, notas amaderadas" },
     sizes: [{ml:5, price:120}, {ml:10, price:220}],
-    bestseller: true
+    bestseller: true,
+    fullBottle: { price:1450 }
   },
   {
     brand: "Rasasi", name: "Hawas Verde", family: "fresco", image: "hawasverde.jpg",
@@ -773,7 +799,8 @@ const PRODUCTS = [
     brand: "Lattafa", name: "Haya", family: "floral", image: "lattafahaya.jpg",
     notes: { salida: "Naranja sanguina, fresa, mandarina, rosa", corazon: "Gardenia, jazmín, orquídea de vainilla", fondo: "Sándalo, ámbar, castaña" },
     sizes: [{ml:5, price:null}, {ml:10, price:null}],
-    comingSoon: true
+    comingSoon: true,
+    fullBottle: { price:690 }
   },
   {
     brand: "Mast Perfume", name: "Rome Melancholia Pour Homme", family: "amaderado", image: "romehomme.jpg",
@@ -920,7 +947,7 @@ function openProductModal(p, color){
 
   const orderArea = document.getElementById('pmOrderArea');
   if (p.comingSoon){
-    orderArea.innerHTML = `<div class="card-footer"><div class="card-price"><small>Disponible pronto</small></div></div>`;
+    orderArea.innerHTML = `<div class="card-footer"><div class="card-price"><small>Disponible pronto</small></div></div>${fullBottleBlock(p)}`;
   } else {
     orderArea.innerHTML = `
       <div class="sizes" id="pmSizes">
@@ -933,6 +960,7 @@ function openProductModal(p, color){
         </div>
         <button type="button" class="btn btn-solid card-order" id="pmAddBtn">Agregar</button>
       </div>
+      ${fullBottleBlock(p)}
     `;
     let currentSize = p.sizes[0];
     const pmPills = orderArea.querySelectorAll('.size-pill');
@@ -958,6 +986,16 @@ function openProductModal(p, color){
   productModal.classList.add('open');
   productOverlay.classList.add('open');
   document.body.classList.add('no-scroll');
+}
+
+function fullBottleBlock(p){
+  if (!p.fullBottle) return '';
+  const msg = waLink(`Hola, quiero pedir el frasco completo (100ml) de ${p.brand} ${p.name}. Vi que cuesta $${p.fullBottle.price} MXN.`);
+  return `
+    <div class="full-bottle">
+      <span>Frasco completo (100ml): <strong>$${p.fullBottle.price} MXN</strong> · por pedido</span>
+      <a href="${msg}" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+    </div>`;
 }
 
 function buildCard(p, i){
@@ -1003,6 +1041,7 @@ function buildCard(p, i){
         </div>
         <button type="button" class="btn btn-solid card-order">Agregar</button>
       </div>`}
+      ${fullBottleBlock(p)}
     </div>
   `;
 
