@@ -266,6 +266,23 @@
     background:radial-gradient(circle, rgba(201,162,75,.16) 0%, rgba(201,162,75,.05) 40%, transparent 70%);
     pointer-events:none;
   }
+  .hero-hint{
+    font-family:'Jost',sans-serif;
+    font-size:12px;
+    letter-spacing:.1em;
+    color:var(--gold-2);
+    text-transform:uppercase;
+    margin:0 0 26px;
+    position:relative; z-index:1;
+    animation: heroHintBounce 2.2s ease-in-out infinite;
+  }
+  @keyframes heroHintBounce{
+    0%,100%{ transform:translateY(0); opacity:.75; }
+    50%{ transform:translateY(6px); opacity:1; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hero-hint{ animation:none; }
+  }
   .hero-eyebrow{
     font-family:'Cormorant Garamond', serif;
     font-style:italic;
@@ -627,6 +644,7 @@
 
 <section class="hero" id="inicio">
   <div class="hero-glow"></div>
+  <p class="hero-hint">↓ Desliza para conocer nuestras fragancias</p>
   <p class="hero-eyebrow">J . D Perfumes</p>
   <p class="tagline">Decants de perfumes 100% originales, fraccionados a mano en el tamaño exacto para encontrar tu fragancia perfecta antes de dar el paso al frasco completo.</p>
   <div class="hero-ctas">
