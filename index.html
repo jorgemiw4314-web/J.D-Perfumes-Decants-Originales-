@@ -676,7 +676,7 @@
   </div>
   <div class="grid" id="productGrid"></div>
 
-  <div class="coming-head reveal">
+  <div class="coming-head reveal" id="comingHead">
     <p class="eyebrow">Muy pronto</p>
     <h3>Próximas fragancias</h3>
   </div>
@@ -802,33 +802,32 @@ const PRODUCTS = [
   {
     brand: "Rasasi", name: "Hawas Verde", family: "fresco", image: "hawasverde.jpg",
     notes: { salida: "Lima, manzana verde, romero", corazon: "Cítricos mediterráneos, notas herbales", fondo: "Pachulí, ámbar, almizcle" },
-    sizes: [{ml:5, price:null}, {ml:10, price:null}],
-    comingSoon: true
+    sizes: [{ml:5, price:110}, {ml:10, price:200}],
+    fullBottle: { price:1400 }
   },
   {
     brand: "Rasasi", name: "Hawas Kobra", family: "fresco", image: "hawaskobra.jpg",
     notes: { salida: "Jengibre, bergamota, mandarina", corazon: "Té verde, neroli, canela", fondo: "Almizcle, ámbar gris, maderas" },
-    sizes: [{ml:5, price:null}, {ml:10, price:null}],
-    comingSoon: true
+    sizes: [{ml:5, price:100}, {ml:10, price:180}],
+    fullBottle: { price:1200 }
   },
   {
     brand: "Lattafa", name: "Haya", family: "floral", image: "lattafahaya.jpg",
     notes: { salida: "Naranja sanguina, fresa, mandarina, rosa", corazon: "Gardenia, jazmín, orquídea de vainilla", fondo: "Sándalo, ámbar, castaña" },
-    sizes: [{ml:5, price:null}, {ml:10, price:null}],
-    comingSoon: true,
-    fullBottle: { price:690 }
+    sizes: [{ml:5, price:90}, {ml:10, price:160}],
+    fullBottle: { price:850 }
   },
   {
     brand: "Mast Perfume", name: "Rome Melancholia Pour Homme", family: "amaderado", image: "romehomme.jpg",
     notes: { salida: "Lavanda, ajenjo, cardamomo, nuez moscada, bergamota", corazon: "Piña, manzanilla, violeta", fondo: "Ciprés, cedro, coco, vainilla, ámbar gris" },
-    sizes: [{ml:5, price:null}, {ml:10, price:null}],
-    comingSoon: true
+    sizes: [{ml:5, price:90}, {ml:10, price:160}],
+    fullBottle: { price:900 }
   },
   {
     brand: "Mast Perfume", name: "Rome Melancholia Pour Femme", family: "floral", image: "romefemme.jpg",
     notes: { salida: "Ciruela", corazon: "Osmanto, cuero", fondo: "Vainilla" },
-    sizes: [{ml:5, price:null}, {ml:10, price:null}],
-    comingSoon: true
+    sizes: [{ml:5, price:90}, {ml:10, price:160}],
+    fullBottle: { price:900 }
   },
 ];
 // ======= FIN CONFIGURACIÓN =======
@@ -1107,6 +1106,11 @@ SORTED_PRODUCTS.forEach(({p, i}) => {
   if (p.comingSoon) comingGrid.appendChild(card);
   else grid.appendChild(card);
 });
+
+if (comingGrid.children.length === 0){
+  document.getElementById('comingHead').style.display = 'none';
+  comingGrid.style.display = 'none';
+}
 
 const bestGrid = document.getElementById('bestsellersGrid');
 if (bestGrid){
