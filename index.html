@@ -474,6 +474,15 @@
     padding:7px 14px;
     border-radius:2px;
   }
+  .badge-soldout{
+    display:block; width:100%; box-sizing:border-box;
+    background:#2a1414;
+    color:#e8b4b4;
+    font-family:'Jost',sans-serif;
+    font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; text-align:center;
+    padding:8px 10px;
+    border-bottom:1px solid #4a2222;
+  }
   .card-coming .card-photo img{ filter:grayscale(.55); opacity:.75; }
   .card-coming .card-name{ color:var(--cream-dim); }
   .card-coming .card-price small{ color:var(--gold-2); letter-spacing:.08em; text-transform:uppercase; font-size:11px; }
@@ -836,6 +845,7 @@ const PRODUCTS = [
     notes: { salida: "Notas marinas, menta", corazon: "Geranio", fondo: "Almizcle, maderas" },
     sizes: [{ml:5, price:100}, {ml:10, price:180}],
     bestseller: true, bestsellerRank: 1,
+    soldOut: true,
     fullBottle: { price:930 }
   },
   {
@@ -843,6 +853,7 @@ const PRODUCTS = [
     notes: { salida: "Salvia esclarea", corazon: "Jazmín egipcio, notas marinas", fondo: "Ámbar, ámbar gris, notas minerales" },
     sizes: [{ml:5, price:110}, {ml:10, price:200}],
     bestseller: true, bestsellerRank: 3,
+    soldOut: true,
     fullBottle: { price:1000 }
   },
   {
@@ -1037,6 +1048,8 @@ function openProductModal(p, color){
   const orderArea = document.getElementById('pmOrderArea');
   if (p.comingSoon){
     orderArea.innerHTML = `<div class="card-footer"><div class="card-price"><small>Disponible pronto</small></div></div>${fullBottleBlock(p)}`;
+  } else if (p.soldOut){
+    orderArea.innerHTML = `<div class="card-footer"><div class="card-price"><small>Agotado por el momento</small></div></div>${fullBottleBlock(p)}`;
   } else {
     orderArea.innerHTML = `
       <div class="sizes" id="pmSizes">
@@ -1090,10 +1103,11 @@ function fullBottleBlock(p){
 function buildCard(p, i){
   const color = FAMILY_COLORS[p.family] || "#C9A24B";
   const card = document.createElement('div');
-  card.className = 'card' + (p.bestseller ? ' card-bestseller' : '') + (p.comingSoon ? ' card-coming' : '');
+  card.className = 'card' + (p.bestseller ? ' card-bestseller' : '') + (p.comingSoon || p.soldOut ? ' card-coming' : '');
 
   card.innerHTML = `
     ${p.bestseller ? '<div class="badge-bestseller">Más vendido</div>' : ''}
+    ${p.soldOut ? '<div class="badge-soldout">Agotado</div>' : ''}
     <div class="card-photo"><img src="${p.image}" alt="${p.brand} ${p.name}" loading="lazy"></div>
     <div class="card-tag" style="background:${color};"></div>
     <div class="card-body">
@@ -1119,6 +1133,9 @@ function buildCard(p, i){
       ${p.comingSoon ? `
       <div class="card-footer">
         <div class="card-price"><small>Disponible pronto</small></div>
+      </div>` : p.soldOut ? `
+      <div class="card-footer">
+        <div class="card-price"><small>Agotado por el momento</small></div>
       </div>` : `
       <div class="sizes" data-idx="${i}">
         ${p.sizes.map((s,si)=>`<button class="size-pill${si===0?' active':''}" data-si="${si}">${s.ml}ml</button>`).join('')}
@@ -1136,7 +1153,7 @@ function buildCard(p, i){
 
   card.querySelector('.card-photo').addEventListener('click', ()=> openProductModal(p, color));
 
-  if (p.comingSoon) return card;
+  if (p.comingSoon || p.soldOut) return card;
 
   const pills = card.querySelectorAll('.size-pill');
   const priceVal = card.querySelector('.price-val');
