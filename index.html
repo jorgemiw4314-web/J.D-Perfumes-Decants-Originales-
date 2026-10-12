@@ -186,6 +186,22 @@
 
   .card-order.added{ background:linear-gradient(135deg, var(--gold-1), var(--gold-3)); }
 
+  .news-strip{
+    position:fixed; top:0; left:0; right:0; z-index:60; height:36px;
+    display:none; align-items:center; justify-content:center; gap:10px;
+    background:linear-gradient(90deg,#8a6a2b,#e2c27a 50%,#8a6a2b);
+    color:#1a1409; font-size:13px; font-weight:500; padding:0 40px;
+  }
+  body.has-strip .news-strip{ display:flex; }
+  body.has-strip .nav{ top:36px; }
+  body.has-strip .fb-popup{ top:calc(114px + env(safe-area-inset-top, 0px)); }
+  .news-strip a{ color:#1a1409; text-decoration:underline; font-weight:600; white-space:nowrap; }
+  .news-strip button{ position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:0; color:#1a1409; font-size:18px; cursor:pointer; padding:4px 8px; }
+  .nav-new-dot{ display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--gold-1); margin-left:6px; vertical-align:middle; animation:newpulse 1.8s infinite; }
+  @keyframes newpulse{ 0%,100%{ opacity:1; } 50%{ opacity:.3; } }
+  #comingHead{ scroll-margin-top:110px; }
+  @media (max-width:600px){ .news-strip{ font-size:12px; gap:6px; padding:0 34px 0 10px; } }
+  @media (prefers-reduced-motion:reduce){ .nav-new-dot{ animation:none; } }
   .fb-popup{
     position:fixed; left:16px; top:calc(78px + env(safe-area-inset-top, 0px)); z-index:70;
     max-width:280px;
@@ -641,6 +657,8 @@
 </head>
 <body>
 
+<div class="news-strip" id="newsStrip"><span>✨ Llegan fragancias nuevas a J.D Perfumes</span><a href="#comingHead">Ver lo nuevo</a><button type="button" id="newsClose" aria-label="Cerrar">✕</button></div>
+
 <nav class="nav">
   <div class="nav-brand">
     <img class="crest" src="jd-mark.png" alt="J.D Perfumes">
@@ -650,6 +668,7 @@
     <li><a href="#inicio">Inicio</a></li>
     <li><a href="#mas-vendidos">Favoritos</a></li>
     <li><a href="#coleccion">Colección</a></li>
+    <li id="navNewLi" style="display:none"><a href="#comingHead">Próximamente<span class="nav-new-dot"></span></a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ul>
   <div class="nav-cta">
@@ -894,6 +913,24 @@ const PRODUCTS = [
     notes: { salida: "Ciruela", corazon: "Osmanto, cuero", fondo: "Vainilla" },
     sizes: [{ml:5, price:90}, {ml:10, price:160}],
     fullBottle: { price:900 }
+  },
+  {
+    brand: "Rabanne", name: "Invictus Parfum", family: "fresco", image: "invictus.jpg",
+    notes: { salida: "Lavanda, pimienta rosa, flor marina", corazon: "Mirto, hoja de violeta", fondo: "Sándalo, cashmeran" },
+    sizes: [{ml:5, price:0}, {ml:10, price:0}],
+    comingSoon: true
+  },
+  {
+    brand: "Armaf", name: "Éter Arabian Sky", family: "fresco", image: "eter.jpg",
+    notes: { salida: "Limón, naranja, bergamota italiana, toronja, piña", corazon: "Lavanda, geranio, ylang ylang, caramelo", fondo: "Pachuli, vetiver, cedro, almizcle, ámbar" },
+    sizes: [{ml:5, price:0}, {ml:10, price:0}],
+    comingSoon: true
+  },
+  {
+    brand: "Valentino", name: "Uomo Born in Roma Extradose", family: "amaderado", image: "valentino.jpg",
+    notes: { salida: "Especias", corazon: "Vetiver, lavanda silvestre", fondo: "Ámbar, maderas" },
+    sizes: [{ml:5, price:0}, {ml:10, price:0}],
+    comingSoon: true
   },
 ];
 // ======= FIN CONFIGURACIÓN =======
@@ -1239,6 +1276,21 @@ const io = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
 }, { threshold: 0.15 });
 revealEls.forEach(el=> io.observe(el));
+
+// Franja de novedades
+(function(){
+  try{
+    if (comingGrid.children.length === 0) return;
+    document.getElementById('navNewLi').style.display = '';
+    let closed = false;
+    try{ closed = sessionStorage.getItem('jd_news_closed') === '1'; }catch(e){}
+    if (!closed) document.body.classList.add('has-strip');
+    document.getElementById('newsClose').addEventListener('click', ()=>{
+      document.body.classList.remove('has-strip');
+      try{ sessionStorage.setItem('jd_news_closed','1'); }catch(e){}
+    });
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
