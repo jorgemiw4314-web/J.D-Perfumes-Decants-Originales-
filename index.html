@@ -729,6 +729,35 @@
     .hero{ padding-top:130px; }
     body.has-strip .hero{ padding-top:170px; }
   }
+
+  /* ---------- NUEVAS FRAGANCIAS ---------- */
+  #nuevo, #mas-vendidos, #coleccion{ scroll-margin-top:96px; }
+  .new-arrivals{ background:radial-gradient(ellipse at 50% 0%, rgba(201,162,75,.14), transparent 65%), var(--bg); }
+  .swipe-hint{ text-align:center; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-2); margin:-18px 0 14px; }
+  .grid-new{
+    display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory;
+    margin:0 -6vw; padding:8px 6vw 20px; scrollbar-width:none; -webkit-overflow-scrolling:touch;
+  }
+  .grid-new::-webkit-scrollbar{ display:none; }
+  .grid-new .card{ flex:0 0 76%; scroll-snap-align:center; }
+  .card-new{
+    border-color:var(--gold-1);
+    box-shadow:0 0 0 1px var(--gold-2), 0 0 28px rgba(232,199,106,.28), 0 20px 44px rgba(0,0,0,.45);
+  }
+  .badge-new{
+    display:block; width:100%; box-sizing:border-box; text-align:center;
+    font-family:'Jost',sans-serif; font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+    color:#171310; padding:9px 10px;
+    background:linear-gradient(110deg, var(--gold-3) 0%, var(--gold-1) 40%, #FFF3C4 50%, var(--gold-1) 60%, var(--gold-3) 100%);
+    background-size:220% 100%; animation:newshine 3.2s linear infinite;
+  }
+  @keyframes newshine{ 0%{ background-position:120% 0; } 100%{ background-position:-120% 0; } }
+  @media (prefers-reduced-motion:reduce){ .badge-new{ animation:none; } }
+  @media (min-width:700px){
+    .swipe-hint{ display:none; }
+    .grid-new{ display:grid; grid-template-columns:repeat(3,1fr); gap:28px; overflow:visible; max-width:1200px; margin:0 auto; padding:8px 0 0; }
+    .grid-new .card{ flex:none; }
+  }
 </style>
 <!-- Google Analytics (GA4) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QW761DXYN4"></script>
@@ -741,7 +770,7 @@
 </head>
 <body>
 
-<div class="news-strip" id="newsStrip"><span>✨ Llegan fragancias nuevas a J.D Perfumes</span><a href="#comingHead">Ver lo nuevo</a><button type="button" id="newsClose" aria-label="Cerrar">✕</button></div>
+<div class="news-strip" id="newsStrip"><span>✨ Llegan fragancias nuevas a J.D Perfumes</span><a href="#nuevo" id="newsLink">Ver lo nuevo</a><button type="button" id="newsClose" aria-label="Cerrar">✕</button></div>
 
 <nav class="nav">
   <div class="nav-brand">
@@ -752,7 +781,7 @@
     <li><a href="#inicio">Inicio</a></li>
     <li><a href="#mas-vendidos">Favoritos</a></li>
     <li><a href="#coleccion">Colección</a></li>
-    <li id="navNewLi" style="display:none"><a href="#comingHead">Próximamente<span class="nav-new-dot"></span></a></li>
+    <li id="navNewLi" style="display:none"><a href="#nuevo" id="navNewLink">Novedades<span class="nav-new-dot"></span></a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ul>
   <div class="nav-cta">
@@ -803,6 +832,16 @@
     <a class="btn btn-solid whats-link" target="_blank" rel="noopener">Pedir por WhatsApp</a>
   </div>
   <div class="hero-scroll"><span>Descubre</span><span class="line"></span></div>
+</section>
+
+<section class="new-arrivals" id="nuevo">
+  <div class="section-head reveal">
+    <p class="eyebrow">Recién llegados</p>
+    <h2>Nuevas fragancias</h2>
+    <p>Ya disponibles en decants de 5 y 10 ml.</p>
+  </div>
+  <p class="swipe-hint">Desliza para ver más →</p>
+  <div class="grid-new" id="newGrid"></div>
 </section>
 
 <section class="bestsellers-showcase" id="mas-vendidos">
@@ -998,19 +1037,22 @@ const PRODUCTS = [
     brand: "Rabanne", name: "Invictus Parfum", family: "fresco", image: "invictus.jpg",
     notes: { salida: "Lavanda, pimienta rosa, bruma marina", corazon: "Jabón negro, mirto, hoja de violeta", fondo: "Sándalo, cashmeran, almizcle" },
     sizes: [{ml:5, price:160}, {ml:10, price:280}],
-    fullBottle: { price:1990 }
+    fullBottle: { price:1990 },
+    isNew: true
   },
   {
     brand: "Armaf", name: "Éter Arabian Sky", family: "fresco", image: "eter.jpg",
     notes: { salida: "Pimienta, limón, naranja, bergamota italiana, toronja, piña", corazon: "Lavanda, geranio, ylang-ylang, caramelo", fondo: "Pachuli, vetiver, cedro, almizcle, cuero, ámbar" },
     sizes: [{ml:5, price:120}, {ml:10, price:210}],
-    fullBottle: { price:1350 }
+    fullBottle: { price:1350 },
+    isNew: true
   },
   {
     brand: "Valentino", name: "Uomo Born in Roma Extradose", family: "amaderado", image: "valentino.jpg",
     notes: { salida: "Especias, bergamota, mandarina", corazon: "Vetiver, lavanda silvestre", fondo: "Ámbar, maderas" },
     sizes: [{ml:5, price:230}, {ml:10, price:380}],
-    fullBottle: { price:2999 }
+    fullBottle: { price:2999 },
+    isNew: true
   },
 ];
 // ======= FIN CONFIGURACIÓN =======
@@ -1222,9 +1264,10 @@ function fullBottleBlock(p){
 function buildCard(p, i){
   const color = FAMILY_COLORS[p.family] || "#C9A24B";
   const card = document.createElement('div');
-  card.className = 'card' + (p.bestseller ? ' card-bestseller' : '') + (p.comingSoon || p.soldOut ? ' card-coming' : '');
+  card.className = 'card' + (p.isNew ? ' card-new' : '') + (p.bestseller ? ' card-bestseller' : '') + (p.comingSoon || p.soldOut ? ' card-coming' : '');
 
   card.innerHTML = `
+    ${p.isNew ? '<div class="badge-new">✦ Recién llegado</div>' : ''}
     ${p.bestseller ? '<div class="badge-bestseller">Más vendido</div>' : ''}
     ${p.soldOut ? '<div class="badge-soldout">Agotado</div>' : ''}
     <div class="card-photo"><img src="${p.image}" alt="${p.brand} ${p.name}" loading="lazy"></div>
@@ -1306,11 +1349,13 @@ function buildCard(p, i){
 
 const grid = document.getElementById('productGrid');
 const comingGrid = document.getElementById('comingGrid');
+const newGrid = document.getElementById('newGrid');
 const SORTED_PRODUCTS = PRODUCTS
   .map((p, i) => ({ p, i }))
   .sort((a, b) => a.p.brand.localeCompare(b.p.brand) || a.p.name.localeCompare(b.p.name));
 SORTED_PRODUCTS.forEach(({p, i}) => {
   if (p.bestseller) return; // los más vendidos solo van en la sección de arriba
+  if (p.isNew && !p.bestseller && newGrid) return; // los nuevos van en su propia sección
   const card = buildCard(p, i);
   card.dataset.family = p.family;
   if (p.comingSoon) comingGrid.appendChild(card);
@@ -1320,6 +1365,13 @@ SORTED_PRODUCTS.forEach(({p, i}) => {
 if (comingGrid.children.length === 0){
   document.getElementById('comingHead').style.display = 'none';
   comingGrid.style.display = 'none';
+}
+
+if (newGrid){
+  PRODUCTS.map((p, i) => ({p, i}))
+    .filter(({p}) => p.isNew && !p.bestseller)
+    .forEach(({p, i}) => newGrid.appendChild(buildCard(p, i)));
+  if (newGrid.children.length === 0) document.getElementById('nuevo').style.display = 'none';
 }
 
 const bestGrid = document.getElementById('bestsellersGrid');
@@ -1360,7 +1412,9 @@ revealEls.forEach(el=> io.observe(el));
 // Franja de novedades
 (function(){
   try{
-    if (comingGrid.children.length === 0) return;
+    const hasNew = newGrid && newGrid.children.length > 0;
+    if (!hasNew && comingGrid.children.length === 0) return;
+    if (!hasNew){ document.getElementById('newsLink').setAttribute('href','#comingHead'); document.getElementById('navNewLink').setAttribute('href','#comingHead'); }
     document.getElementById('navNewLi').style.display = '';
     let closed = false;
     try{ closed = sessionStorage.getItem('jd_news_closed') === '1'; }catch(e){}
