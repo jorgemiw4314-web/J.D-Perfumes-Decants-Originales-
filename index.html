@@ -758,6 +758,67 @@
     .grid-new{ display:grid; grid-template-columns:repeat(3,1fr); gap:28px; overflow:visible; max-width:1200px; margin:0 auto; padding:8px 0 0; }
     .grid-new .card{ flex:none; }
   }
+
+  /* ---------- DAMAS / CABALLEROS ---------- */
+  .filter-pills.gender-pills{ margin-bottom:14px; justify-content:center; }
+  .gender-pill{ padding:11px 26px; font-size:13px; letter-spacing:.14em; }
+  @media (max-width:699px){
+    .filter-pills.gender-pills{ overflow:visible; }
+    .gender-pill{ flex:1 1 0; padding:11px 8px; }
+  }
+
+  /* ---------- ACCESOS EN LA PORTADA ---------- */
+  #damas, #caballeros{ scroll-margin-top:96px; }
+  .hero-tiles{ display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:560px; margin-top:34px; position:relative; z-index:1; }
+  .tile{
+    display:block; text-align:center; padding:20px 10px; border:1px solid var(--gold-3);
+    background:rgba(0,0,0,.28); color:var(--gold-1); text-decoration:none;
+    font-family:'Jost',sans-serif; font-size:13px; letter-spacing:.2em; text-transform:uppercase;
+    transition:background .25s ease, color .25s ease, border-color .25s ease;
+  }
+  .tile:hover, .tile:active{ background:var(--gold-2); border-color:var(--gold-2); color:#171310; }
+  .tile-new{
+    grid-column:1 / -1; font-weight:600; color:#171310; border-color:var(--gold-1);
+    background:linear-gradient(110deg, var(--gold-3) 0%, var(--gold-1) 40%, #FFF3C4 50%, var(--gold-1) 60%, var(--gold-3) 100%);
+    background-size:220% 100%; animation:newshine 3.2s linear infinite;
+    box-shadow:0 0 26px rgba(232,199,106,.28);
+  }
+  .tile-new:hover, .tile-new:active{ background-color:var(--gold-1); }
+  @media (prefers-reduced-motion:reduce){ .tile-new{ animation:none; } }
+  .hero-ctas{ margin-top:22px; }
+  @media (min-width:700px){
+    .hero-tiles{ grid-template-columns:repeat(3,1fr); }
+    .tile-new{ grid-column:auto; }
+  }
+
+  /* ---------- PORTADA: ACCESOS MEJORADOS Y BLOQUES POR GÉNERO ---------- */
+  .hero-tiles{ gap:12px; margin-top:38px; max-width:600px; }
+  .tile{
+    display:flex; flex-direction:column; align-items:center; gap:3px; padding:24px 12px 18px;
+    border:1px solid rgba(201,162,75,.55); letter-spacing:0; text-transform:none;
+    background:linear-gradient(180deg, rgba(201,162,75,.16), rgba(0,0,0,.42));
+  }
+  .tile-sub{ font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:var(--rose-gold); }
+  .tile-title{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:30px; line-height:1.1; color:var(--gold-1); }
+  .tile-count{ margin-top:8px; padding-top:9px; width:58%; border-top:1px solid rgba(201,162,75,.35); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--cream-dim); }
+  .tile:hover .tile-sub, .tile:active .tile-sub, .tile:hover .tile-title, .tile:active .tile-title, .tile:hover .tile-count, .tile:active .tile-count{ color:#171310; }
+  .tile-new .tile-sub, .tile-new .tile-count{ color:rgba(23,19,16,.72); }
+  .tile-new .tile-title{ color:#171310; }
+  .tile-new .tile-count{ border-top-color:rgba(23,19,16,.3); }
+
+  .gender-block{ max-width:1200px; margin:0 auto; }
+  .gender-head{ text-align:center; margin:clamp(40px,7vw,64px) 0 26px; }
+  .gender-head h3{ font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:400; font-size:clamp(34px,6vw,46px); color:var(--gold-1); margin-top:6px; }
+  .gender-head::after{ content:''; display:block; width:48px; height:1px; background:var(--gold-3); margin:18px auto 0; }
+  .gender-block:first-of-type .gender-head{ margin-top:0; }
+
+  .tile.tile-new{
+    border-color:var(--gold-1);
+    background:linear-gradient(110deg, var(--gold-3) 0%, var(--gold-1) 40%, #FFF3C4 50%, var(--gold-1) 60%, var(--gold-3) 100%);
+    background-size:220% 100%;
+  }
+  .tile.tile-new:hover, .tile.tile-new:active{ background:var(--gold-1); }
+  .tile-count{ width:auto; padding:9px 18px 0; white-space:nowrap; }
 </style>
 <!-- Google Analytics (GA4) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QW761DXYN4"></script>
@@ -827,8 +888,12 @@
   <p class="hero-hint">↓ Desliza para conocer nuestras fragancias</p>
   <p class="hero-eyebrow">J . D Perfumes</p>
   <p class="tagline">Decants de perfumes 100% originales, fraccionados a mano en el tamaño exacto para encontrar tu fragancia perfecta antes de dar el paso al frasco completo.</p>
+  <nav class="hero-tiles" aria-label="Categorías">
+    <a href="#damas" class="tile"><span class="tile-sub">Para ella</span><span class="tile-title">Damas</span><span class="tile-count" data-count="damas"></span></a>
+    <a href="#caballeros" class="tile"><span class="tile-sub">Para él</span><span class="tile-title">Caballeros</span><span class="tile-count" data-count="caballeros"></span></a>
+    <a href="#nuevo" class="tile tile-new"><span class="tile-sub">✦ Recién llegadas</span><span class="tile-title">Nuevas fragancias</span><span class="tile-count" data-count="nuevo"></span></a>
+  </nav>
   <div class="hero-ctas">
-    <a href="#coleccion" class="btn">Ver colección</a>
     <a class="btn btn-solid whats-link" target="_blank" rel="noopener">Pedir por WhatsApp</a>
   </div>
   <div class="hero-scroll"><span>Descubre</span><span class="line"></span></div>
@@ -859,14 +924,14 @@
     <h2>Perfumes originales, en el tamaño justo</h2>
     <p>Fraccionado a mano desde el frasco 100% original y sellado de fábrica. Nada de esencias genéricas ni imitaciones.</p>
   </div>
-  <div class="filter-pills" id="filterPills">
-    <button type="button" class="filter-pill active" data-filter="all">Todos</button>
-    <button type="button" class="filter-pill" data-filter="fresco">Fresco</button>
-    <button type="button" class="filter-pill" data-filter="floral">Floral</button>
-    <button type="button" class="filter-pill" data-filter="amaderado">Amaderado</button>
-    <button type="button" class="filter-pill" data-filter="oriental">Oriental</button>
+  <div class="gender-block" id="damas">
+    <div class="gender-head"><p class="eyebrow">Para ella</p><h3>Damas</h3></div>
+    <div class="grid" id="gridDamas"></div>
   </div>
-  <div class="grid" id="productGrid"></div>
+  <div class="gender-block" id="caballeros">
+    <div class="gender-head"><p class="eyebrow">Para él</p><h3>Caballeros</h3></div>
+    <div class="grid" id="gridCaballeros"></div>
+  </div>
 
   <div class="coming-head reveal" id="comingHead">
     <p class="eyebrow">Muy pronto</p>
@@ -952,103 +1017,110 @@ const QUIZ_COPY = {
 
 const PRODUCTS = [
   {
-    brand: "Armaf", name: "Odyssey Mandarin Sky", family: "fresco", image: "mandarin.jpg",
+    brand: "Armaf", name: "Odyssey Mandarin Sky", family: "fresco", gender: "caballeros", image: "mandarin.jpg",
     notes: { salida: "Salvia, mandarina, naranja, azafrán", corazon: "Caramelo, haba tonka, tagetes", fondo: "Vetiver, cedro, ambroxan" },
     sizes: [{ml:5, price:100}, {ml:10, price:180}],
     fullBottle: { price:830 }
   },
   {
-    brand: "Lattafa", name: "Khamrah", family: "oriental", image: "khamrah.jpg",
+    brand: "Lattafa", name: "Khamrah", family: "oriental", gender: "caballeros", image: "khamrah.jpg",
     notes: { salida: "Canela, nuez moscada, bergamota", corazon: "Dátiles, praliné, tuberosa, lirio de los valles", fondo: "Vainilla, haba tonka, benjuí, mirra, madera de ámbar" },
     sizes: [{ml:5, price:100}, {ml:10, price:180}],
     fullBottle: { price:800 }
   },
   {
-    brand: "Lattafa", name: "Yara", family: "floral", image: "yara.jpg",
+    brand: "Lattafa", name: "Yara", family: "floral", gender: "damas", image: "yara.jpg",
     notes: { salida: "Orquídea, heliotropo, naranja tangerina", corazon: "Acorde gourmand, frutas tropicales", fondo: "Vainilla, almizcle, sándalo" },
     sizes: [{ml:5, price:90}, {ml:10, price:160}],
     fullBottle: { price:700 }
   },
   {
-    brand: "Armaf", name: "Odyssey Mega", family: "amaderado", image: "mega.jpg",
+    brand: "Armaf", name: "Odyssey Mega", family: "amaderado", gender: "caballeros", image: "mega.jpg",
     notes: { salida: "Naranja, bergamota, limón, jengibre, menta", corazon: "Piña, enebro, salvia, geranio, frutos rojos", fondo: "Almizcle, haba tonka, cedro, vetiver" },
     sizes: [{ml:5, price:100}, {ml:10, price:180}],
     bestseller: true, bestsellerRank: 4,
     fullBottle: { price:800 }
   },
   {
-    brand: "Afnan", name: "9 PM", family: "oriental", image: "afnan.jpg",
+    brand: "Afnan", name: "9 PM", family: "oriental", gender: "caballeros", image: "afnan.jpg",
     notes: { salida: "Manzana, canela, lavanda, bergamota", corazon: "Azahar, muguet", fondo: "Vainilla, haba tonka, ámbar, pachulí" },
     sizes: [{ml:5, price:90}, {ml:10, price:160}],
     fullBottle: { price:800 }
   },
   {
-    brand: "Armaf", name: "Odyssey Aqua", family: "fresco", image: "aquaman.jpg",
+    brand: "Armaf", name: "Odyssey Aqua", family: "fresco", gender: "caballeros", image: "aquaman.jpg",
     notes: { salida: "Artemisa, naranja, toronja", corazon: "Lavanda, menta", fondo: "Pachulí, ambroxan, ciprés" },
     sizes: [{ml:5, price:100}, {ml:10, price:180}],
     bestseller: true, bestsellerRank: 1,
     fullBottle: { price:930 }
   },
   {
-    brand: "Rasasi", name: "Hawas Fire", family: "oriental", image: "hawasfire.jpg",
+    brand: "Rasasi", name: "Hawas Fire", family: "oriental", gender: "caballeros", image: "hawasfire.jpg",
     notes: { salida: "Salvia esclarea", corazon: "Jazmín egipcio, notas marinas", fondo: "Ámbar, ámbar gris, notas minerales" },
     sizes: [{ml:5, price:110}, {ml:10, price:200}],
     bestseller: true, bestsellerRank: 3,
     fullBottle: { price:1100 }
   },
   {
-    brand: "Ariana Grande", name: "Cloud", family: "floral", image: "arianacloud.jpg",
+    brand: "Ariana Grande", name: "Cloud", family: "floral", gender: "damas", image: "arianacloud.jpg",
     notes: { salida: "Lavanda, pera, bergamota", corazon: "Crema batida, praliné, coco, vainilla orquídea", fondo: "Almizcle, notas amaderadas" },
     sizes: [{ml:5, price:120}, {ml:10, price:220}],
+    soldOut: true,
     bestseller: true, bestsellerRank: 2,
     fullBottle: { price:1450 }
   },
   {
-    brand: "Rasasi", name: "Hawas Verde", family: "fresco", image: "hawasverde.jpg",
+    brand: "Ariana Grande", name: "R.E.M. Cherry Eclipse", family: "floral", gender: "damas", image: "rem.webp",
+    notes: { salida: "Cereza negra, madreselva azucarada", corazon: "Malvavisco, jazmín sambac", fondo: "Ámbar, almizcle" },
+    sizes: [{ml:5, price:0}, {ml:10, price:0}],
+    comingSoon: true
+  },
+  {
+    brand: "Rasasi", name: "Hawas Verde", family: "fresco", gender: "caballeros", image: "hawasverde.jpg",
     notes: { salida: "Lima, manzana verde, romero", corazon: "Cítricos mediterráneos, notas herbales", fondo: "Pachulí, ámbar, almizcle" },
     sizes: [{ml:5, price:110}, {ml:10, price:200}],
     fullBottle: { price:1400 }
   },
   {
-    brand: "Rasasi", name: "Hawas Kobra", family: "fresco", image: "hawaskobra.jpg",
+    brand: "Rasasi", name: "Hawas Kobra", family: "fresco", gender: "caballeros", image: "hawaskobra.jpg",
     notes: { salida: "Jengibre, bergamota, mandarina", corazon: "Té verde, neroli, canela", fondo: "Almizcle, ámbar, maderas" },
     sizes: [{ml:5, price:100}, {ml:10, price:180}],
     fullBottle: { price:1200 }
   },
   {
-    brand: "Lattafa", name: "Haya", family: "floral", image: "lattafahaya.jpg",
+    brand: "Lattafa", name: "Haya", family: "floral", gender: "damas", image: "lattafahaya.jpg",
     notes: { salida: "Naranja sanguina, fresa, mandarina, rosa, champán", corazon: "Gardenia, jazmín, orquídea de vainilla", fondo: "Sándalo, ámbar, castaña" },
     sizes: [{ml:5, price:90}, {ml:10, price:160}],
     fullBottle: { price:850 }
   },
   {
-    brand: "Mast Perfume", name: "Rome Melancholia Pour Homme", family: "amaderado", image: "romehomme.jpg",
+    brand: "Mast Perfume", name: "Rome Melancholia Pour Homme", family: "amaderado", gender: "caballeros", image: "romehomme.jpg",
     notes: { salida: "Lavanda, ajenjo, cardamomo, nuez moscada, bergamota", corazon: "Piña, manzanilla, violeta", fondo: "Ciprés, cedro, coco, vainilla, ámbar gris" },
     sizes: [{ml:5, price:90}, {ml:10, price:160}],
     fullBottle: { price:900 }
   },
   {
-    brand: "Mast Perfume", name: "Rome Melancholia Pour Femme", family: "floral", image: "romefemme.jpg",
+    brand: "Mast Perfume", name: "Rome Melancholia Pour Femme", family: "floral", gender: "damas", image: "romefemme.jpg",
     notes: { salida: "Frutas amarillas", corazon: "Flores blancas, lavanda, caramelo, violeta", fondo: "Ámbar blanco" },
     sizes: [{ml:5, price:90}, {ml:10, price:160}],
     fullBottle: { price:900 }
   },
   {
-    brand: "Rabanne", name: "Invictus Parfum", family: "fresco", image: "invictus.jpg",
+    brand: "Rabanne", name: "Invictus Parfum", family: "fresco", gender: "caballeros", image: "invictus.jpg",
     notes: { salida: "Lavanda, pimienta rosa, bruma marina", corazon: "Jabón negro, mirto, hoja de violeta", fondo: "Sándalo, cashmeran, almizcle" },
     sizes: [{ml:5, price:160}, {ml:10, price:280}],
     fullBottle: { price:1990 },
     isNew: true
   },
   {
-    brand: "Armaf", name: "Éter Arabian Sky", family: "fresco", image: "eter.jpg",
+    brand: "Armaf", name: "Éter Arabian Sky", family: "fresco", gender: "caballeros", image: "eter.jpg",
     notes: { salida: "Pimienta, limón, naranja, bergamota italiana, toronja, piña", corazon: "Lavanda, geranio, ylang-ylang, caramelo", fondo: "Pachuli, vetiver, cedro, almizcle, cuero, ámbar" },
     sizes: [{ml:5, price:120}, {ml:10, price:210}],
     fullBottle: { price:1350 },
     isNew: true
   },
   {
-    brand: "Valentino", name: "Uomo Born in Roma Extradose", family: "amaderado", image: "valentino.jpg",
+    brand: "Valentino", name: "Uomo Born in Roma Extradose", family: "amaderado", gender: "caballeros", image: "valentino.jpg",
     notes: { salida: "Especias, bergamota, mandarina", corazon: "Vetiver, lavanda silvestre", fondo: "Ámbar, maderas" },
     sizes: [{ml:5, price:230}, {ml:10, price:380}],
     fullBottle: { price:3300 },
@@ -1347,19 +1419,26 @@ function buildCard(p, i){
   return card;
 }
 
-const grid = document.getElementById('productGrid');
+const gridDamas = document.getElementById('gridDamas');
+const gridCab = document.getElementById('gridCaballeros');
 const comingGrid = document.getElementById('comingGrid');
 const newGrid = document.getElementById('newGrid');
 const SORTED_PRODUCTS = PRODUCTS
   .map((p, i) => ({ p, i }))
   .sort((a, b) => a.p.brand.localeCompare(b.p.brand) || a.p.name.localeCompare(b.p.name));
 SORTED_PRODUCTS.forEach(({p, i}) => {
-  if (p.bestseller) return; // los más vendidos solo van en la sección de arriba
-  if (p.isNew && !p.bestseller && newGrid) return; // los nuevos van en su propia sección
   const card = buildCard(p, i);
   card.dataset.family = p.family;
-  if (p.comingSoon) comingGrid.appendChild(card);
-  else grid.appendChild(card);
+  card.classList.remove('card-bestseller','card-new');
+  card.querySelectorAll('.badge-bestseller,.badge-new').forEach(e=>e.remove());
+  (p.gender === 'damas' ? gridDamas : gridCab).appendChild(card);
+});
+
+// Contadores de la portada
+document.querySelectorAll('[data-count]').forEach(el=>{
+  const k = el.dataset.count;
+  const n = k === 'nuevo' ? PRODUCTS.filter(p=>p.isNew).length : PRODUCTS.filter(p=>p.gender===k).length;
+  el.textContent = k === 'nuevo' ? n + ' nuevas' : n + ' fragancias';
 });
 
 if (comingGrid.children.length === 0){
@@ -1382,19 +1461,6 @@ if (bestGrid){
     .sort((a, b) => (a.p.bestsellerRank || 99) - (b.p.bestsellerRank || 99))
     .forEach(({p, i}) => bestGrid.appendChild(buildCard(p, i)));
 }
-
-// Filtro por familia olfativa (solo aplica a los disponibles)
-const filterPills = document.querySelectorAll('.filter-pill');
-filterPills.forEach(pill=>{
-  pill.addEventListener('click', ()=>{
-    filterPills.forEach(p=>p.classList.remove('active'));
-    pill.classList.add('active');
-    const f = pill.dataset.filter;
-    grid.querySelectorAll('.card').forEach(card=>{
-      card.classList.toggle('filtered-out', f !== 'all' && card.dataset.family !== f);
-    });
-  });
-});
 
 // Menú móvil
 const burger = document.getElementById('burgerBtn');
